@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>정진밥</title>
+<title>🍚 정진밥</title>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
 <style>
 body{
     font-family: Arial, sans-serif;
-    max-width: 800px;
+    max-width: 900px;
     margin: 20px auto;
     padding: 15px;
     background:#f5f5f5;
@@ -16,36 +17,70 @@ body{
 
 .card{
     background:white;
-    border-radius:12px;
-    padding:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    border-radius:16px;
+    padding:25px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+h1{text-align:center;margin-bottom:5px;}
+.subtitle{text-align:center;color:#666;margin-top:0;margin-bottom:10px;}
+.todayDate{text-align:center;color:#888;margin-bottom:20px;}
+
+.today-header{text-align:center;}
+.today-badge{
+    display:inline-block;
+    background:#4CAF50;
+    color:white;
+    padding:8px 16px;
+    border-radius:20px;
+    font-weight:bold;
+    margin-bottom:20px;
 }
 
 .meal{
     margin-bottom:20px;
-    padding:10px;
-    border-left:4px solid #4CAF50;
+    padding:18px;
+    border-left:5px solid #4CAF50;
     background:#fafafa;
+    border-radius:10px;
     white-space:pre-line;
+    line-height:1.8;
+}
+
+details{margin-top:15px;}
+
+summary{
+    cursor:pointer;
+    font-size:18px;
+    font-weight:bold;
+    padding:12px;
+    background:#f0f0f0;
+    border-radius:8px;
 }
 
 .weekTable{
     width:100%;
     border-collapse:collapse;
-    margin-top:20px;
-}
-
-.weekTable th,
-.weekTable td{
-    border:1px solid #ddd;
-    padding:8px;
-    text-align:left;
-    vertical-align:top;
-    white-space:pre-line;
+    margin-top:15px;
 }
 
 .weekTable th{
-    background:#eee;
+    background:#4CAF50;
+    color:white;
+    padding:10px;
+    border:1px solid #ddd;
+}
+
+.weekTable td{
+    border:1px solid #ddd;
+    padding:10px;
+    vertical-align:top;
+    white-space:pre-line;
+    min-width:140px;
+}
+
+.saturday{
+    background:#FFF8E1;
 }
 </style>
 </head>
@@ -53,104 +88,123 @@ body{
 <body>
 
 <div class="card">
+<h1>🍚 정진밥</h1>
+<p class="subtitle">품질팀 식단 안내</p>
 
-<h1>🍽 품질팀 식단표</h1>
-
+<div id="todayDate" class="todayDate"></div>
 <div id="today"></div>
 
-<h2>이번주 식단</h2>
-
 <div id="week"></div>
-
 </div>
 
 <script>
-
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTtKMekb2nYu-VuOimjku0-de3Rg2glOTry6b7ywWMCsLOOlxJ6n8bGHsFYhKFX-zoILwmx6yehKsv7/pub?gid=0&single=true&output=csv";
 
-Papa.parse(csvUrl, {
-    download: true,
-    skipEmptyLines: true,
+const now = new Date();
 
-    complete: function(results) {
+document.getElementById("todayDate").innerText =
+now.toLocaleDateString("ko-KR", {
+    year:"numeric",
+    month:"long",
+    day:"numeric",
+    weekday:"long"
+});
+
+Papa.parse(csvUrl, {
+    download:true,
+    skipEmptyLines:true,
+
+    complete:function(results){
 
         const data = results.data.slice(1);
 
         const todayMap = {
-            1: "월",
-            2: "화",
-            3: "수",
-            4: "목",
-            5: "금",
-            6: "토"
+            1:"월",
+            2:"화",
+            3:"수",
+            4:"목",
+            5:"금",
+            6:"토"
         };
 
-        const today = todayMap[new Date().getDay()];
-        const todayData = data.find(row => row[0] && row[0].trim() === today);
+        const day = new Date().getDay();
 
-        if (todayData) {
+        if(day === 0){
 
             document.getElementById("today").innerHTML = `
-                <h2>오늘 메뉴 (${today}요일)</h2>
-
-                <div class="meal">
-🌅 조식
-
-${todayData[1] || ""}
-                </div>
-
-                <div class="meal">
-🍱 중식
-
-${todayData[2] || ""}
-                </div>
-
-                <div class="meal">
-🌙 석식
-
-${todayData[3] || ""}
+                <div class="today-header">
+                    <div class="today-badge">일요일</div>
+                    <h2>오늘은 식당 운영이 없습니다 😊</h2>
                 </div>
             `;
+
+        } else {
+
+            const today = todayMap[day];
+            const todayData = data.find(row => row[0] && row[0].trim() === today);
+
+            if(todayData){
+
+                document.getElementById("today").innerHTML = `
+                    <div class="today-header">
+                        <div class="today-badge">오늘 ${today}요일</div>
+                    </div>
+
+                    <div class="meal">🌅 조식
+
+${todayData[1] || ""}</div>
+
+                    <div class="meal">🍱 중식
+
+${todayData[2] || ""}</div>
+
+                    <div class="meal">🌙 석식
+
+${todayData[3] || ""}</div>
+                `;
+            }
         }
 
         let weekHtml = `
-<details>
-<summary style="cursor:pointer;font-size:20px;font-weight:bold;">
-📅 이번주 식단 보기
-</summary>
+        <details>
+            <summary>📅 이번주 식단 보기</summary>
 
-<table class="weekTable">
-<tr>
-<th>요일</th>
-<th>조식</th>
-<th>중식</th>
-<th>석식</th>
-</tr>
-`;
+            <div style="overflow-x:auto;">
+            <table class="weekTable">
 
-data.forEach(row => {
+            <tr>
+                <th>요일</th>
+                <th>조식</th>
+                <th>중식</th>
+                <th>석식</th>
+            </tr>
+        `;
 
-    if (!row[0]) return;
+        data.forEach(row => {
 
-    weekHtml += `
-    <tr>
-        <td>${row[0]}</td>
-        <td>${row[1] || ""}</td>
-        <td>${row[2] || ""}</td>
-        <td>${row[3] || ""}</td>
-    </tr>
-    `;
-});
+            if(!row[0]) return;
 
-weekHtml += `
-</table>
-</details>
-`;
+            const rowClass = row[0].trim() === "토" ? "saturday" : "";
+
+            weekHtml += `
+                <tr class="${rowClass}">
+                    <td>${row[0]}</td>
+                    <td>${row[1] || ""}</td>
+                    <td>${row[2] || ""}</td>
+                    <td>${row[3] || ""}</td>
+                </tr>
+            `;
+        });
+
+        weekHtml += `
+            </table>
+            </div>
+        </details>
+        `;
 
         document.getElementById("week").innerHTML = weekHtml;
     }
 });
-
 </script>
 
 </body>
