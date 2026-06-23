@@ -66,74 +66,66 @@ body{
 
 <script>
 
-const csvUrl =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vTtKMekb2nYu-VuOimjku0-de3Rg2glOTry6b7ywWMCsLOOlxJ6n8bGHsFYhKFX-zoILwmx6yehKsv7/pub?gid=0&single=true&output=csv";
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTtKMekb2nYu-VuOimjku0-de3Rg2glOTry6b7ywWMCsLOOlxJ6n8bGHsFYhKFX-zoILwmx6yehKsv7/pub?gid=0&single=true&output=csv";
 
 Papa.parse(csvUrl, {
-download: true,
-skipEmptyLines: true,
-complete: function(results){
+    download: true,
+    skipEmptyLines: true,
 
-```
-    const data = results.data.slice(1);
+    complete: function(results) {
 
-    const todayMap = {
-        1:"월",
-        2:"화",
-        3:"수",
-        4:"목",
-        5:"금",
-        6:"토"
-    };
+        const data = results.data.slice(1);
 
-    const today = todayMap[new Date().getDay()];
-    const todayData = data.find(row => row[0] && row[0].trim() === today);
+        const todayMap = {
+            1: "월",
+            2: "화",
+            3: "수",
+            4: "목",
+            5: "금",
+            6: "토"
+        };
 
-    if(todayData){
+        const today = todayMap[new Date().getDay()];
+        const todayData = data.find(row => row[0] && row[0].trim() === today);
 
-        document.getElementById("today").innerHTML = `
-        <h2>오늘 메뉴 (${today}요일)</h2>
+        if (todayData) {
 
-        <div class="meal">
-```
+            document.getElementById("today").innerHTML = `
+                <h2>오늘 메뉴 (${today}요일)</h2>
 
+                <div class="meal">
 🌅 조식
 
-${todayData[1] || ""} </div>
+${todayData[1] || ""}
+                </div>
 
-```
-        <div class="meal">
-```
-
+                <div class="meal">
 🍱 중식
 
-${todayData[2] || ""} </div>
+${todayData[2] || ""}
+                </div>
 
-```
-        <div class="meal">
-```
-
+                <div class="meal">
 🌙 석식
 
-${todayData[3] || ""} </div>
-`;
-}
+${todayData[3] || ""}
+                </div>
+            `;
+        }
 
-```
-    let weekHtml = `
-    <details>
-        <summary style="cursor:pointer;font-size:20px;font-weight:bold;">
-            📅 이번주 식단 보기
-        </summary>
-    `;
+        let weekHtml = `
+            <details>
+                <summary style="cursor:pointer;font-size:20px;font-weight:bold;">
+                    📅 이번주 식단 보기
+                </summary>
+        `;
 
-    data.forEach(row => {
+        data.forEach(row => {
 
-        if(!row[0]) return;
+            if (!row[0]) return;
 
-        weekHtml += `
-        <div class="meal">
-```
+            weekHtml += `
+                <div class="meal">
 
 <b>${row[0]}요일</b>
 
@@ -144,19 +136,17 @@ ${row[1] || ""}
 ${row[2] || ""}
 
 🌙 석식
-${row[3] || ""} </div>
-`;
+${row[3] || ""}
+
+                </div>
+            `;
+        });
+
+        weekHtml += "</details>";
+
+        document.getElementById("week").innerHTML = weekHtml;
+    }
 });
-
-```
-    weekHtml += "</details>";
-
-    document.getElementById("week").innerHTML = weekHtml;
-}
-```
-
-});
-
 
 </script>
 
