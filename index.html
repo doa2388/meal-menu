@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>품질팀 식단표</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 30px auto;
+    padding:20px;
+}
+
+.card{
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:20px;
+}
+
+.today{
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+<h1>🍽 품질팀 식단표</h1>
+
+<div id="todayMenu"></div>
+
+</div>
+
+<script>
+
+const menu = {
+    1:"제육볶음, 미역국, 김치",
+    2:"돈까스, 우동, 단무지",
+    3:"김치찌개, 계란말이",
+    4:"카레라이스, 샐러드",
+    5:"짜장면, 군만두"
+};
+
+const day = new Date().getDay();
+
+let result="오늘은 식단이 없습니다.";
+
+if(menu[day]){
+    result = `
+    <div class="today">오늘 메뉴</div>
+    <p>${menu[day]}</p>
+    `;
+}
+
+document.getElementById("todayMenu").innerHTML=result;
+
+</script>
+
+</body>
+</html>
