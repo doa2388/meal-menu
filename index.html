@@ -8,57 +8,139 @@
 <style>
 body{
     font-family: Arial, sans-serif;
-    max-width: 600px;
-    margin: 30px auto;
-    padding:20px;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 15px;
+    background:#f5f5f5;
 }
 
 .card{
-    border:1px solid #ddd;
-    border-radius:10px;
+    background:white;
+    border-radius:12px;
     padding:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
 }
 
-.today{
-    font-size:24px;
-    font-weight:bold;
-    margin-bottom:10px;
+.meal{
+    margin-bottom:20px;
+    padding:10px;
+    border-left:4px solid #4CAF50;
+    background:#fafafa;
+    white-space:pre-line;
+}
+
+.weekTable{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+.weekTable th,
+.weekTable td{
+    border:1px solid #ddd;
+    padding:8px;
+    text-align:left;
+    vertical-align:top;
+    white-space:pre-line;
+}
+
+.weekTable th{
+    background:#eee;
 }
 </style>
-
 </head>
+
 <body>
 
 <div class="card">
 
 <h1>🍽 품질팀 식단표</h1>
 
-<div id="todayMenu"></div>
+<div id="today"></div>
+
+<h2>이번주 식단</h2>
+
+<div id="week"></div>
 
 </div>
 
 <script>
 
-const menu = {
-    1:"제육볶음, 미역국, 김치",
-    2:"돈까스, 우동, 단무지",
-    3:"김치찌개, 계란말이",
-    4:"카레라이스, 샐러드",
-    5:"짜장면, 군만두"
+const csvUrl =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vTtKMekb2nYu-VuOimjku0-de3Rg2glOTry6b7ywWMCsLOOlxJ6n8bGHsFYhKFX-zoILwmx6yehKsv7/pub?gid=0&single=true&output=csv";
+
+fetch(csvUrl)
+.then(res => res.text())
+.then(csv => {
+
+const rows = csv.trim().split("\n").map(r => r.split(","));
+
+const data = rows.slice(1);
+
+const todayMap = {
+    1:"월",
+    2:"화",
+    3:"수",
+    4:"목",
+    5:"금",
+    6:"토"
 };
 
-const day = new Date().getDay();
+const today = todayMap[new Date().getDay()];
 
-let result="오늘은 식단이 없습니다.";
+const todayData = data.find(r => r[0].trim() === today);
 
-if(menu[day]){
-    result = `
-    <div class="today">오늘 메뉴</div>
-    <p>${menu[day]}</p>
-    `;
+if(todayData){
+
+document.getElementById("today").innerHTML = `
+<h2>오늘 메뉴 (${today}요일)</h2>
+
+<div class="meal">
+🌅 조식
+
+${todayData[1]}
+</div>
+
+<div class="meal">
+🍱 중식
+
+${todayData[2]}
+</div>
+
+<div class="meal">
+🌙 석식
+
+${todayData[3]}
+</div>
+`;
 }
 
-document.getElementById("todayMenu").innerHTML=result;
+let table = `
+<table class="weekTable">
+<tr>
+<th>요일</th>
+<th>조식</th>
+<th>중식</th>
+<th>석식</th>
+</tr>
+`;
+
+data.forEach(r => {
+table += `
+<tr>
+<td>${r[0]}</td>
+<td>${r[1]}</td>
+<td>${r[2]}</td>
+<td>${r[3]}</td>
+</tr>
+`;
+});
+
+table += "</table>";
+
+document.getElementById("week").innerHTML = table;
+
+});
 
 </script>
 
