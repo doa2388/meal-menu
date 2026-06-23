@@ -114,35 +114,38 @@ ${todayData[3] || ""}
         }
 
         let weekHtml = `
-            <details>
-                <summary style="cursor:pointer;font-size:20px;font-weight:bold;">
-                    📅 이번주 식단 보기
-                </summary>
-        `;
+<details>
+<summary style="cursor:pointer;font-size:20px;font-weight:bold;">
+📅 이번주 식단 보기
+</summary>
 
-        data.forEach(row => {
+<table class="weekTable">
+<tr>
+<th>요일</th>
+<th>조식</th>
+<th>중식</th>
+<th>석식</th>
+</tr>
+`;
 
-            if (!row[0]) return;
+data.forEach(row => {
 
-            weekHtml += `
-                <div class="meal">
+    if (!row[0]) return;
 
-<b>${row[0]}요일</b>
+    weekHtml += `
+    <tr>
+        <td>${row[0]}</td>
+        <td>${row[1] || ""}</td>
+        <td>${row[2] || ""}</td>
+        <td>${row[3] || ""}</td>
+    </tr>
+    `;
+});
 
-🌅 조식
-${row[1] || ""}
-
-🍱 중식
-${row[2] || ""}
-
-🌙 석식
-${row[3] || ""}
-
-                </div>
-            `;
-        });
-
-        weekHtml += "</details>";
+weekHtml += `
+</table>
+</details>
+`;
 
         document.getElementById("week").innerHTML = weekHtml;
     }
