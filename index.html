@@ -57,28 +57,35 @@ summary{
     background:#f0f0f0;
     border-radius:8px;
 }
-
+    
 .weekTable{
     width:100%;
-    border-collapse:collapse;
-    margin-top:15px;
+    table-layout:fixed;
 }
 
-.weekTable th{
-    background:#4CAF50;
-    color:white;
-    padding:10px;
-    border:1px solid #ddd;
+.weekTable th:first-child,
+.weekTable td:first-child{
+    width:45px;
 }
 
 .weekTable td{
-    border:1px solid #ddd;
-    padding:10px;
-    vertical-align:top;
     white-space:pre-line;
-    min-width:140px;
+    word-break:keep-all;
+    overflow-wrap:break-word;
 }
 
+@media (max-width:768px){
+
+    .weekTable{
+        font-size:12px;
+    }
+
+    .weekTable th,
+    .weekTable td{
+        padding:6px;
+        min-width:0;
+    }
+    
 .saturday{
     background:#FFF8E1;
 }
