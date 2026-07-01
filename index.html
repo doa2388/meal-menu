@@ -38,13 +38,35 @@ h1{text-align:center;margin-bottom:5px;}
 }
 
 .meal{
-    margin-bottom:20px;
+    margin-bottom:0px;
     padding:18px;
     border-left:5px solid #4CAF50;
     background:#fafafa;
     border-radius:10px;
     white-space:pre-line;
     line-height:1.8;
+}
+
+.todayMeals{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-bottom:20px;
+    align-items:stretch;
+}
+
+@media (max-width:768px){
+
+    .todayMeals{
+        display:flex;
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .meal{
+        margin-bottom:0;
+    }
+
 }
 
 details{margin-top:15px;}
@@ -88,10 +110,13 @@ summary{
         padding:6px;
         min-width:0;
     }
-    
-.saturday{
+
+}
+
+.weekTable tr.saturday td{
     background:#FFF8E1;
 }
+    
 </style>
 </head>
 
@@ -157,20 +182,24 @@ Papa.parse(csvUrl, {
 
                 document.getElementById("today").innerHTML = `
                     <div class="today-header">
-                        <div class="today-badge">오늘 ${today}요일</div>
-                    </div>
+    <div class="today-badge">오늘 ${today}요일</div>
+</div>
 
-                    <div class="meal">🌅 조식
+<div class="todayMeals">
+
+<div class="meal">🌅 조식
 
 ${todayData[1] || ""}</div>
 
-                    <div class="meal">🍱 중식
+<div class="meal">🍱 중식
 
 ${todayData[2] || ""}</div>
 
-                    <div class="meal">🌙 석식
+<div class="meal">🌙 석식
 
 ${todayData[3] || ""}</div>
+
+</div>
                 `;
             }
         }
