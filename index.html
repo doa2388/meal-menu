@@ -188,6 +188,9 @@ Papa.parse(csvUrl, {
         const day = new Date().getDay();
         const today = todayMap[day];
 
+        const tomorrowDay = (day + 1) % 7;
+        const tomorrow = todayMap[tomorrowDay];
+
         if(day === 0){
 
             document.getElementById("today").innerHTML = `
@@ -248,7 +251,7 @@ ${todayData[3] || ""}</div>
 
             let rowClass = "";
 
-if (row[0].trim() === today) {
+if (row[0].trim() === tomorrow) {
     rowClass = "todayRow";
 }
 
