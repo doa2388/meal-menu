@@ -7,278 +7,362 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <style>
-body{
+body {
     font-family: Arial, sans-serif;
     max-width: 900px;
     margin: 20px auto;
     padding: 15px;
-    background:#f5f5f5;
+    background: #f5f5f5;
 }
 
-.card{
-    background:white;
-    border-radius:16px;
-    padding:25px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-h1{text-align:center;margin-bottom:5px;}
-.subtitle{text-align:center;color:#666;margin-top:0;margin-bottom:10px;}
-.todayDate{text-align:center;color:#888;margin-bottom:20px;}
-
-.today-header{text-align:center;}
-.today-badge{
-    display:inline-block;
-    background:#4CAF50;
-    color:white;
-    padding:8px 16px;
-    border-radius:20px;
-    font-weight:bold;
-    margin-bottom:20px;
+h1 {
+    text-align: center;
+    margin-bottom: 5px;
 }
 
-.meal{
-    margin-bottom:0;
-    padding:18px;
-    background:#F3FAF4;
-    border-radius:12px;
-    white-space:pre-line;
-    line-height:1.8;
-    border:1px solid #D8ECD9;
-}
-    
-.breakfast{
-    background:#FFF7E6;
-    border:1px solid #FFD89C;
+.subtitle {
+    text-align: center;
+    color: #666;
+    margin-top: 0;
+    margin-bottom: 10px;
 }
 
-.lunch{
-    background:#EDF8FF;
-    border:1px solid #BFDFFF;
+.todayDate {
+    text-align: center;
+    color: #888;
+    margin-bottom: 20px;
 }
 
-.dinner{
-    background:#F5F0FF;
-    border:1px solid #D8C9FF;
-}
-    
-.todayMeals{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px;
-    margin-bottom:20px;
-    align-items:stretch;
+.today-header {
+    text-align: center;
 }
 
-@media (max-width:768px){
-
-    .todayMeals{
-        display:flex;
-        flex-direction:column;
-        gap:15px;
-    }
-
-    .meal{
-        margin-bottom:0;
-    }
-
+.today-badge {
+    display: inline-block;
+    background: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 
-details{margin-top:15px;}
-
-summary{
-    cursor:pointer;
-    font-size:18px;
-    font-weight:bold;
-    padding:12px;
-    background:#f0f0f0;
-    border-radius:8px;
+.meal {
+    min-width: 0;
+    margin-bottom: 0;
+    padding: 18px;
+    background: #F3FAF4;
+    border-radius: 12px;
+    line-height: 1.8;
+    border: 1px solid #D8ECD9;
 }
-    
-.weekTable{
-    width:100%;
-    table-layout:fixed;
+
+.meal-title {
+    margin-bottom: 1em;
+}
+
+.breakfast {
+    background: #FFF7E6;
+    border: 1px solid #FFD89C;
+}
+
+.lunch {
+    background: #EDF8FF;
+    border: 1px solid #BFDFFF;
+}
+
+.dinner {
+    background: #F5F0FF;
+    border: 1px solid #D8C9FF;
+}
+
+.todayMeals {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: stretch;
+}
+
+details {
+    margin-top: 15px;
+}
+
+summary {
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 12px;
+    background: #f0f0f0;
+    border-radius: 8px;
+}
+
+.weekTable {
+    width: 100%;
+    table-layout: fixed;
 }
 
 .weekTable th:first-child,
-.weekTable td:first-child{
-    width:45px;
-    min-width:45px;
-    text-align:center;
-    font-weight:bold;
+.weekTable td:first-child {
+    width: 45px;
+    text-align: center;
+    font-weight: bold;
 }
 
-.weekTable td{
-    white-space:pre-line;
-    word-break:keep-all;
-    overflow-wrap:break-word;
+.weekTable td {
+    vertical-align: top;
+    white-space: normal;
 }
 
-@media (max-width:768px){
+.menu-line {
+    display: block;
+    min-width: 0;
+    white-space: nowrap;
+    word-break: normal;
+    overflow-wrap: normal;
+    line-height: 1.8;
+}
 
-    .weekTable{
-        font-size:12px;
+.weekTable tr.saturday td {
+    background: #FFF8E1;
+}
+
+.weekTable tr.todayRow td {
+    background: #DFF5DF;
+}
+
+@media (max-width: 768px) {
+    .todayMeals {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .weekTable {
+        font-size: 12px;
     }
 
     .weekTable th,
-    .weekTable td{
-        padding:6px;
-        min-width:0;
+    .weekTable td {
+        padding: 6px;
+        min-width: 0;
     }
-
 }
-
-.weekTable tr.saturday td{
-    background:#FFF8E1;
-}
-
-.todayRow td{
-    background:#EAF7EA;
-}
-
-.weekTable tr.todayRow td{
-    background:#DFF5DF;
-}
-
 </style>
 </head>
 
 <body>
-
 <div class="card">
-<h1>🍚 정진밥</h1>
-<p class="subtitle">이번주 식단 안내</p>
+    <h1>🍚 정진밥</h1>
+    <p class="subtitle">이번주 식단 안내</p>
 
-<div id="todayDate" class="todayDate"></div>
-<div id="today"></div>
-
-<div id="week"></div>
+    <div id="todayDate" class="todayDate"></div>
+    <div id="today"></div>
+    <div id="week"></div>
 </div>
 
 <script>
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTtKMekb2nYu-VuOimjku0-de3Rg2glOTry6b7ywWMCsLOOlxJ6n8bGHsFYhKFX-zoILwmx6yehKsv7/pub?gid=0&single=true&output=csv";
 
+function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[char]));
+}
+
+function renderMenu(value) {
+    return String(value || "")
+        .split(/\r\n|\n|\r/)
+        .map(menu =>
+            '<span class="menu-line">' +
+            (menu.trim() ? escapeHtml(menu) : "&nbsp;") +
+            '</span>'
+        )
+        .join("");
+}
+
+// 긴 메뉴만 글씨 크기를 줄여 한 줄에 맞춥니다.
+function fitMenuText() {
+    document.querySelectorAll(".menu-line").forEach(line => {
+        if (line.clientWidth === 0) return;
+
+        // 화면이 넓어졌으면 원래 글씨 크기로 복원합니다.
+        line.style.fontSize = "";
+
+        const baseSize = parseFloat(getComputedStyle(line).fontSize);
+        const available = line.clientWidth;
+
+        if (line.scrollWidth <= available) return;
+
+        let low = 0;
+        let high = baseSize;
+
+        for (let i = 0; i < 16; i++) {
+            const size = (low + high) / 2;
+            line.style.fontSize = size + "px";
+
+            if (line.scrollWidth > available) {
+                high = size;
+            } else {
+                low = size;
+            }
+        }
+
+        line.style.fontSize = Math.max(0.1, low - 0.05) + "px";
+    });
+}
+
+let fitFrame;
+
+function scheduleMenuFit() {
+    cancelAnimationFrame(fitFrame);
+    fitFrame = requestAnimationFrame(fitMenuText);
+}
+
+window.addEventListener("resize", scheduleMenuFit);
+
+if ("ResizeObserver" in window) {
+    new ResizeObserver(scheduleMenuFit)
+        .observe(document.querySelector(".card"));
+}
+
+if (document.fonts) {
+    document.fonts.ready.then(scheduleMenuFit);
+}
+
 const now = new Date();
 
 document.getElementById("todayDate").innerText =
-now.toLocaleDateString("ko-KR", {
-    year:"numeric",
-    month:"long",
-    day:"numeric",
-    weekday:"long"
-});
+    now.toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        weekday: "long"
+    });
 
 Papa.parse(csvUrl, {
-    download:true,
-    skipEmptyLines:true,
+    download: true,
+    skipEmptyLines: true,
 
-    complete:function(results){
-
+    complete: function(results) {
         const data = results.data.slice(1);
 
         const todayMap = {
-            1:"월",
-            2:"화",
-            3:"수",
-            4:"목",
-            5:"금",
-            6:"토"
+            1: "월",
+            2: "화",
+            3: "수",
+            4: "목",
+            5: "금",
+            6: "토"
         };
 
-        const day = new Date().getDay();
+        const day = now.getDay();
         const today = todayMap[day];
+        const tomorrow = todayMap[(day + 1) % 7];
 
-        const tomorrowDay = (day + 1) % 7;
-        const tomorrow = todayMap[tomorrowDay];
-
-        if(day === 0){
-
+        if (day === 0) {
             document.getElementById("today").innerHTML = `
                 <div class="today-header">
                     <div class="today-badge">일요일</div>
                     <h2>오늘은 식당 운영이 없습니다 😊</h2>
                 </div>
             `;
-
         } else {
+            const todayData = data.find(
+                row => row[0] && row[0].trim() === today
+            );
 
-            const todayData = data.find(row => row[0] && row[0].trim() === today);
-
-            if(todayData){
-
+            if (todayData) {
                 document.getElementById("today").innerHTML = `
                     <div class="today-header">
-    <div class="today-badge">오늘 ${today}요일</div>
-</div>
+                        <div class="today-badge">오늘 ${today}요일</div>
+                    </div>
 
-<div class="todayMeals">
+                    <div class="todayMeals">
+                        <div class="meal breakfast">
+                            <div class="meal-title">🌅 조식</div>
+                            ${renderMenu(todayData[1])}
+                        </div>
 
-<div class="meal breakfast">🌅 조식
+                        <div class="meal lunch">
+                            <div class="meal-title">🍱 중식</div>
+                            ${renderMenu(todayData[2])}
+                        </div>
 
-${todayData[1] || ""}</div>
-
-<div class="meal lunch">🍱 중식
-
-${todayData[2] || ""}</div>
-
-<div class="meal dinner">🌙 석식
-
-${todayData[3] || ""}</div>
-
-</div>
+                        <div class="meal dinner">
+                            <div class="meal-title">🌙 석식</div>
+                            ${renderMenu(todayData[3])}
+                        </div>
+                    </div>
                 `;
             }
         }
 
         let weekHtml = `
-        <details>
-            <summary>📅 모든 식단보기</summary>
+            <details>
+                <summary>📅 모든 식단보기</summary>
 
-            <div style="overflow-x:auto;">
-            <table class="weekTable">
-
-            <tr>
-                <th>요일</th>
-                <th>조식</th>
-                <th>중식</th>
-                <th>석식</th>
-            </tr>
+                <table class="weekTable">
+                    <thead>
+                        <tr>
+                            <th>요일</th>
+                            <th>조식</th>
+                            <th>중식</th>
+                            <th>석식</th>
+                        </tr>
+                    </thead>
+                    <tbody>
         `;
 
         data.forEach(row => {
+            if (!row[0]) return;
 
-            if(!row[0]) return;
+            const weekday = row[0].trim();
+            const rowClasses = [];
 
-            let rowClass = "";
+            if (weekday === tomorrow) {
+                rowClasses.push("todayRow");
+            }
 
-if (row[0].trim() === tomorrow) {
-    rowClass = "todayRow";
-}
-
-if (row[0].trim() === "토") {
-    rowClass += " saturday";
-}
+            if (weekday === "토") {
+                rowClasses.push("saturday");
+            }
 
             weekHtml += `
-                <tr class="${rowClass}">
-                    <td>${row[0]}</td>
-                    <td>${row[1] || ""}</td>
-                    <td>${row[2] || ""}</td>
-                    <td>${row[3] || ""}</td>
+                <tr class="${rowClasses.join(" ")}">
+                    <td>${escapeHtml(weekday)}</td>
+                    <td>${renderMenu(row[1])}</td>
+                    <td>${renderMenu(row[2])}</td>
+                    <td>${renderMenu(row[3])}</td>
                 </tr>
             `;
         });
 
         weekHtml += `
-            </table>
-            </div>
-        </details>
+                    </tbody>
+                </table>
+            </details>
         `;
 
         document.getElementById("week").innerHTML = weekHtml;
+
+        document.querySelector("#week details")
+            .addEventListener("toggle", scheduleMenuFit);
+
+        scheduleMenuFit();
     }
 });
 </script>
-
 </body>
 </html>
